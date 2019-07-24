@@ -9,6 +9,10 @@ Given
  
  these set of scripts orchestrate the creation of required files to run RNASeq pipeline on Biowulf.
  
+ **Disclaimer**
+ 
+ If you have 2 GTFs, eg. viral + host hybrid genomes, then you need to create one FASTA and one GTF file for the hybrid genome prior to running PIM
+ 
  Once you have a fasta and a GTF file, here are the steps to create an index folder:
  
  1. check out PIM 
