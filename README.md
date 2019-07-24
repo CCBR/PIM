@@ -7,7 +7,7 @@ Given
  * a GTF style annotation file (genes.gtf), 
  
  
- these set of scripts orchestrate the creation of required files to run [RNASeq CCBR pipeliner](https://github.com/CCBR/Pipeliner) on Biowulf.
+ these set of scripts orchestrate the creation of required files to run [RNASeq CCBR pipeliner](https://github.com/CCBR/Pipeliner) on [Biowulf](https://hpc.nih.gov/).
  
  **Disclaimer**
  
