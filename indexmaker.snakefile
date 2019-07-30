@@ -43,6 +43,7 @@ rule rsem:
 		gtf="genes.gtf"
 	params:
 		genome=GENOME
+	threads: 32
 	output:
 		"rsemref/{sample}.transcripts.ump"
 	shell:'''
@@ -98,6 +99,7 @@ rule star:
 	input:
 		fa="STAR/2.5.2b/ref.fa",
 		gtf="STAR/2.5.2b/genes.gtf"
+	threads: 32
 	output:
 		SA="STAR/2.5.2b/genes-{readlength}/SA"
 	shell:'''
