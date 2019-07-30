@@ -1,9 +1,9 @@
-import sys,os
+import sys,os,pysam
 fa=sys.argv[1]
 genomename=sys.argv[3]
 gtf=sys.argv[2]
 if not os.path.exists(fa+".fai"):
-	os.system("samtools faidx "+fa)
+	pysam.faidx(fa)
 unknown="\"Unknown\";"
 #out=open(genomename+".rRNA_interval_list",'w')
 for f in open(fa+".fai").readlines():
