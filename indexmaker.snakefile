@@ -18,7 +18,8 @@ rule all:
 		expand("{genome}.rRNA_interval_list",genome=GENOME),
 		"karyoplot_gene_coordinates.txt",
 		"qualimap_info.txt",
-		"karyobeds/karyobed.bed"
+		"karyobeds/karyobed.bed",
+		expand("{genome}.json",genome=GENOME)
 	
 
 rule init:
@@ -66,6 +67,7 @@ rule annotate:
 		"annotate.isoforms.txt",
 		"annotate.genes.txt",
 		"refFlat.txt",
+		"genes.ref.bed",
 		"geneinfo.bed"
 	params:
 		sdir=SCRIPTSDIR
@@ -171,4 +173,41 @@ mkdir -p karyobeds
 cd karyobeds
 python {params.sdir}/get_karyoplot_beds.py {input.gtf}
 '''
+
+rule jsonmaker:
+	input:
+		fa=REFFA,
+		gtf=GTFFILE
+	output:
+		json="{sample}.json"
+	param:
+		workdir=OUTDIR,
+		genome=GENOME
+	run:
+		import json
+		bigdict=dict()
+		bigdict["references"]=dict()
+		for i in ["exomeseq", "genomeseq", "rnaseq", "rnaseqvargerm", "ChIPseq"]:
+			bigdict["references"][i]=dict()
+		bigdict["references"]["rnaseq"]["GENOMEFILE"]=input.fa
+		bigdict["references"]["rnaseq"]["GENOME"]=input.fa
+		bigdict["references"]["rnaseq"]["GTFFILE"]=input.gtf
+		bigdict["references"]["rnaseq"]["STARDIR"]=params.workdir+"/STAR/2.5.2b/genes-"
+		bigdict["references"]["rnaseq"]["STARREF"]=params.workdir+"/STAR/2.5.2b/genes-"
+		bigdict["references"]["rnaseq"]["ANNOTATE"]=params.workdir+"/annotate.genes.txt"
+		bigdict["references"]["rnaseq"]["ANNOTATEISOFORMS"]=params.workdir+"/annotate.isoforms.txt"
+		bigdict["references"]["rnaseq"]["REFFLAT"]=params.workdir+"/refFlat.txt"
+		bigdict["references"]["rnaseq"]["BEDREF"]=params.workdir+"/genes.ref.bed"
+		bigdict["references"]["rnaseq"]["GENEINFO"]=params.workdir+"/geneinfo.bed"
+		bigdict["references"]["rnaseq"]["KARYOBEDS"]=params.workdir+"/karyobeds"
+		bigdict["references"]["rnaseq"]["RSEMREF"]=params.workdir+"/rsemref/"+params.genome
+		bigdict["references"]["rnaseq"]["RRNALIST"]=params.workdir+"/"+params.genome+".rRNA_interval_list"
+		bigdict["references"]["rnaseq"]["FASTQ_SCREEN_CONFIG"]="/data/CCBR_Pipeliner/db/PipeDB/lib/fastq_screen.conf"
+		bigdict["references"]["rnaseq"]["FASTAWITHADAPTERSETC"]="/data/CCBR_Pipeliner/db/PipeDB/dev/TruSeq_and_nextera_adapters_new.fa"
+		bigdict["references"]["rnaseq"]["adapter.file"]="/data/CCBR_Pipeliner/db/PipeDB/dev/TruSeq_and_nextera_adapters.ngsqc.dat"
+		bigdict["references"]["rnaseq"]["trimmomatic.adapters"]="/data/CCBR_Pipeliner/db/PipeDB/dev/adapters2.fa"
+		bigdict["references"]["rnaseq"]["fastqc.adapters"]="/data/CCBR_Pipeliner/db/PipeDB/dev/fastqc.adapters"
+		bigdict["references"]["rnaseq"]["ORGANISM"]="HUMAN"
+		with open(output.json, 'w') as fp:
+			json.dump(bigdict, fp, indent=4)
 
