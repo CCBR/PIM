@@ -180,7 +180,7 @@ rule jsonmaker:
 		gtf=GTFFILE
 	output:
 		json="{sample}.json"
-	param:
+	params:
 		workdir=OUTDIR,
 		genome=GENOME
 	run:
