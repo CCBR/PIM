@@ -53,8 +53,8 @@ mkdir rsemref
 fi
 cd rsemref
 pwd
-ln -s ../genes.gtf .
-ln -s ../ref.fa .
+if [ ! -f genes.gtf ]; then ln -s ../genes.gtf .;fi
+if [ ! -f ref.fa ]; then ln -s ../ref.fa .;fi
 module load rsem/1.3.0
 rsem-prepare-reference -p {threads} --gtf {input.gtf} {input.fa} {params.genome}
 rsem-generate-ngvector {params.genome}.transcripts.fa {params.genome}.transcripts
@@ -93,8 +93,8 @@ rule star_init:
 	shell:'''
 mkdir -p STAR/2.5.2b
 cd STAR/2.5.2b
-ln -s ../../ref.fa .
-ln -s ../../genes.gtf .
+if [ ! -f ref.fa ]; then ln -s ../../ref.fa .;fi
+if [ ! -f genes.gtf ];then ln -s ../../genes.gtf .;fi
 '''
 
 rule star:
