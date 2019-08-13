@@ -20,7 +20,7 @@ rule all:
 		"qualimap_info.txt",
 		"karyobeds/karyobed.bed",
 		expand("{genome}.json",genome=GENOME)
-	
+
 
 rule init:
 	input:
@@ -35,7 +35,7 @@ rule init:
 mkdir -p {params.outdir}
 cd {params.outdir}
 ln -s {input.fa} ref.fa
-ln -s {input.gtf} genes.gtf 
+ln -s {input.gtf} genes.gtf
 '''
 
 rule rsem:
@@ -119,7 +119,7 @@ STAR \
 --sjdbOverhang $rl \
 --outTmpDir tmp_{wildcards.readlength} 
 '''
-		
+
 rule rRNA_list:
 	input:
 		fa="ref.fa",
@@ -199,6 +199,7 @@ rule jsonmaker:
 		bigdict["references"]["rnaseq"]["REFFLAT"]=params.workdir+"/refFlat.txt"
 		bigdict["references"]["rnaseq"]["BEDREF"]=params.workdir+"/genes.ref.bed"
 		bigdict["references"]["rnaseq"]["GENEINFO"]=params.workdir+"/geneinfo.bed"
+		bigdict["references"]["rnaseq"]["QUALIMAP_INFO"]=params.workdir+"/qualimap_info.txt"
 		bigdict["references"]["rnaseq"]["KARYOBEDS"]=params.workdir+"/karyobeds"
 		bigdict["references"]["rnaseq"]["RSEMREF"]=params.workdir+"/rsemref/"+params.genome
 		bigdict["references"]["rnaseq"]["RRNALIST"]=params.workdir+"/"+params.genome+".rRNA_interval_list"
