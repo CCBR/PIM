@@ -2,37 +2,37 @@
 Pipeliner Index Maker
 
 
-Given 
- * a reference fasta file (ref.fa) and 
- * a GTF style annotation file (genes.gtf), 
- 
- 
+Given
+ * a reference fasta file (ref.fa) and
+ * a GTF style annotation file (genes.gtf),
+
+
  these set of scripts orchestrate the creation of required files to run [RNASeq CCBR pipeliner](https://github.com/CCBR/Pipeliner) on [Biowulf](https://hpc.nih.gov/).
- 
+
  **Disclaimer**
- 
+
  If you have 2 GTFs, eg. viral + host hybrid genomes, then you need to create one FASTA and one GTF file for the hybrid genome prior to running PIM
- 
+
  Once you have a fasta and a GTF file, here are the steps to create an index folder:
- 
- 1. check out PIM 
- 
+
+ 1. check out PIM
+
  ```
  git clone https://github.com/CCBR/PIM.git
  ```
- 
+
  These files are already checked out at `/data/CCBR_Pipeliner/db/PipeDB/PIM` on Biowulf
- 
+
  2. appropriately edit the `config.yaml`. See details of YAML file below.
- 
+
  3. submit jobs to slurm using `runit.sh`. See details of `runit.sh` below.
- 
+
  4. create a new genome specific JSON file to be added to the CCBR Pipliner
- 
+
  ## YAML file
- 
+
  This file has all the required inputs to run the PIM
- 
+
 | Variable | Comment |
 |----------|:-------------:|
 | GENOME | Name of the genome, eg. "mm10" |
@@ -49,7 +49,7 @@ GENOME: "mm10"
 REFFA: "/data/CCBR_Pipeliner/db/PipeDB/Indices/mm10_basic/indexes/mm10.fa"
 GTFFILE: "/data/CCBR_Pipeliner/db/PipeDB/Indices/mm10_basic/genes.gtf"
 OUTDIR: "/scratch/indexmaker/test"
-SCRIPTSDIR: "/scratch/indexmaker"
+SCRIPTSDIR: "/scratch/indexmaker/Scripts"
 READLENGTHS:
   - 50
   - 100
@@ -57,7 +57,7 @@ READLENGTHS:
 
 ## runit.sh
 
-After editing YAML file, you can dryrun using 
+After editing YAML file, you can dryrun using
 
 ```
 sh runit.sh "-n"
