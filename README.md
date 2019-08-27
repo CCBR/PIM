@@ -25,7 +25,7 @@ Given
 
  2. appropriately edit the `config.yaml`. See details of YAML file below.
 
- 3. submit jobs to slurm using `runit.sh`. See details of `runit.sh` below.
+ 3. submit jobs to slurm using `IndexMaker`. See details of `IndexMaker` below.
 
  4. create a new genome specific JSON file to be added to the CCBR Pipliner
 
@@ -55,18 +55,22 @@ READLENGTHS:
   - 100
 ```
 
-## runit.sh
+- Please also see an example configuration file in 'examples/' directory.
+
+
+## IndexMaker
 
 After editing YAML file, you can dryrun using
 
 ```
-sh runit.sh "-n"
+bash IndexMaker --use-config -n
+```
+- **Note**: This assumes you have a `config.yaml` file in the root of PIM's directory: `/path/to/repo/of/PIM/config.yaml`.
+
+If everything checks out then run:
+
+```
+bash IndexMaker --use-config
 ```
 
-If everything checks out then run
-
-```
-sh runit.sh ""
-```
-
-This will submit jobs to slurm job scheduler and create the files needed. To view cluster resources requested, please read `cluster.json`
+This will submit jobs to SLURM job scheduler to create the reference files. To view cluster resources requested, please read `cluster.json`.

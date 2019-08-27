@@ -1,0 +1,99 @@
+#!/bin/bash
+
+set -euo pipefail
+
+# USAGE_1: /path/to/PIM/IndexMaker --reference-genome=mm10 --reference-fa=/path/to/genome/ref.fa --reference-gtf=/path/to/reference/genes.gtf --working-directory=/path/to/output/everything/
+# USAGE_2: /path/to/PIM/IndexMaker --use-config # Assumes there is a 'config.yaml' file in $PIM_HOME
+
+module load python/3.5 > /dev/null 2>&1
+module load snakemake/5.1.3 > /dev/null 2>&1
+
+get_home() {
+	# Getting PATH of PIMs working dierctory
+	PIM_DIR=$(dirname "$(readlink -f "$0")")
+	echo "${PIM_DIR}"	
+}
+
+
+user_input() {
+	while true; do
+		read -p "Would you like to use the default configuration file?" yn
+		case $yn in
+			[Yy]* ) echo "Yes"; break;;
+			[Nn]* ) echo "No"; break;;
+			* ) echo "Please answer yes or no.";;
+		esac
+	done
+}
+
+usage() {
+	# Check different base cases for usage
+	if [[ $# -eq 0 ]] ; then
+        	# Checking if any arguments are given to 'IndexMaker'
+        	$PIM_HOME/IndexMaker.py -h
+        	exit 0
+	elif [[ $@ =~ "-h" ]]; then
+        	# Checking for -h or --help argument
+        	$PIM_HOME/IndexMaker.py -h
+        	exit 0
+        elif [[ $@ =~ "--use-config" ]]; then
+                # Search for config file in $PIM_HOME
+                if [ -f "${PIM_HOME}/config.yaml" ]; then
+                        echo -e "Found 'config.yaml' in ${PIM_HOME}, using this configuration file."
+                        if [[ $@ =~ "-n" ]]; then
+                                # Checking to dry-run
+                                echo -e '\nDRY-RUNNING PIPELINE\n----------------------'
+				snakemake -n -s ${PIM_HOME}/src/Snakefiles/indexmaker.snakefile --printshellcmds --cluster-config ${PIM_HOME}/cluster.json --cluster "sbatch --cpus-per-task {cluster.threads} -p {cluster.partition} -t {cluster.time} --mem {cluster.mem}" -j 500 --rerun-incomplete --keep-going --restart-times 1 --stats ${PIM_HOME}/stats.txt
+                                exit 0
+                        fi
+                        snakemake -s ${PIM_HOME}/src/Snakefiles/indexmaker.snakefile --printshellcmds --cluster-config ${PIM_HOME}/cluster.json --cluster "sbatch --cpus-per-task {cluster.threads} -p {cluster.partition} -t {cluster.time} --mem {cluster.mem}" -j 500 --rerun-incomplete --keep-going --restart-times 1 --stats ${PIM_HOME}/stats.txt | tee -a ${PIM_HOME}/snakemake.log
+                        exit 0
+                else
+                    	echo -e "Error: Could not find 'config.yaml'!\nIf using the '--use-config' switch, 'config.yaml' must exist in ${PIM_HOME}!"
+                        exit 1
+
+                fi
+	elif [[ $@ =~ "-n" ]]; then
+        	# Checking to dry-run
+        	echo -e '\nDRY-RUNNING PIPELINE\n----------------------'
+        	$PIM_HOME/IndexMaker.py $@ --pim-home=$PIM_HOME
+        	exit 0
+	elif [[ $@ =~ "--dry-run" ]]; then
+        	# Checking to dry-run
+        	echo -e '\nDRY-RUNNING PIPELINE\n----------------------'
+        	$PIM_HOME/IndexMaker.py $@ --pim-home=$PIM_HOME
+        	exit 0
+	fi
+}
+
+
+
+# Get User's buy-in nodes from sacct query
+BUY_IN_NODE=$(ACCOUNT_SPONSOR=$(sacctmgr -rn list user | awk '{print $2}') && scontrol show partitions | grep -i $ACCOUNT_SPONSOR -B1 | grep '^PartitionName' | cut -d '=' -f2 | grep -iv 'gpu'| tr '\n' ',' | sed 's/.$//')
+
+# Getting PATH of PIM repository
+PIM_HOME=$(get_home)
+
+# Edit cluster.json to remove default ccr buy-in node listing 
+if [[ $BUY_IN_NODE =~ "ccr" ]]; then
+	BUY_IN_NODE="$BUY_IN_NODE,norm"
+else
+	BUY_IN_NODE="norm"
+	sed -i 's/\"ccr,norm\"/\"norm\"/g' ${PIM_HOME}/cluster.json
+fi
+
+# Printing PATHS of PIM and user's PWD
+# echo -e "\nPIM_HOME: ${PIM_HOME}"
+# echo -e "PWD: ${PWD}"
+# echo -e "BUY_IN_NODE: ${BUY_IN_NODE}\n"
+
+# Check usage before submitting master job
+usage $@
+
+# Before submitting the job, check if arguments are valid by dry-running the pipeline
+echo -e '\nDRY-RUNNING PIPELINE\n----------------------'
+$PIM_HOME/IndexMaker.py $@ --pim-home=$PIM_HOME -n
+
+# Submit master Master SLURM job
+echo -e "\n\nSubmitting Job Master SLURM JOB:\nsbatch -J PIM_Master_Job --partition=$BUY_IN_NODE  --time=24:00:00 --mail-type=BEGIN,END,FAIL $PIM_HOME/IndexMaker.py $@"
+sbatch -J PIM_Master --partition=$BUY_IN_NODE  --time=24:00:00 --mail-type=BEGIN,END,FAIL $PIM_HOME/IndexMaker.py $@ --pim-home=$PIM_HOME
