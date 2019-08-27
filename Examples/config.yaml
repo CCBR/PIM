@@ -1,0 +1,7 @@
+GENOME: "mm10"
+REFFA: "/data/CCBR_Pipeliner/db/PipeDB/Indices/mm10_basic/indexes/mm10.fa"
+GTFFILE: "/data/CCBR_Pipeliner/db/PipeDB/Indices/mm10_basic/genes.gtf"
+OUTDIR: "/data/CBLCCBR/kopardevn_tmp/indexmaker/test"
+SCRIPTSDIR: "/data/CBLCCBR/kopardevn_tmp/indexmaker/Scripts"
+READLENGTHS:
+  - 50
