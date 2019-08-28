@@ -4,3 +4,4 @@ stats.txt
 .DS_*
 snakemake.log
 config.yaml
+slurm-*.out
