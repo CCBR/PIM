@@ -46,7 +46,11 @@ usage() {
 				snakemake -n -s ${PIM_HOME}/src/Snakefiles/indexmaker.snakefile --printshellcmds --cluster-config ${PIM_HOME}/cluster.json --cluster "sbatch --cpus-per-task {cluster.threads} -p {cluster.partition} -t {cluster.time} --mem {cluster.mem}" -j 500 --rerun-incomplete --keep-going --restart-times 1 --stats ${PIM_HOME}/stats.txt
                                 exit 0
                         fi
-                        snakemake -s ${PIM_HOME}/src/Snakefiles/indexmaker.snakefile --printshellcmds --cluster-config ${PIM_HOME}/cluster.json --cluster "sbatch --cpus-per-task {cluster.threads} -p {cluster.partition} -t {cluster.time} --mem {cluster.mem}" -j 500 --rerun-incomplete --keep-going --restart-times 1 --stats ${PIM_HOME}/stats.txt | tee -a ${PIM_HOME}/snakemake.log
+                        # Dry-run first before submitting master SLURM job
+                        echo -e '\nDRY-RUNNING PIPELINE\n----------------------'
+			snakemake -n -s ${PIM_HOME}/src/Snakefiles/indexmaker.snakefile --printshellcmds --cluster-config ${PIM_HOME}/cluster.json --cluster "sbatch --cpus-per-task {cluster.threads} -p {cluster.partition} -t {cluster.time} --mem {cluster.mem}" -j 500 --rerun-incomplete --keep-going --restart-times 1 --stats ${PIM_HOME}/stats.txt
+			# Submit master SLURM job
+			sbatch -J PIM_Master --partition=$BUY_IN_NODE  --time=24:00:00 --mail-type=BEGIN,END,FAIL ${PIM_HOME}/src/Scripts/run.sh "${PIM_HOME}"
                         exit 0
                 else
                     	echo -e "Error: Could not find 'config.yaml'!\nIf using the '--use-config' switch, 'config.yaml' must exist in ${PIM_HOME}!"
