@@ -16,6 +16,8 @@ def configure(filename, options):
 		fh.write('PIM_HOME: "{}"\n'.format(options.pim_home))
 		fh.write('GENOME: "{}"\n'.format(options.reference_genome))
 		fh.write('READLENGTHS:\n')
+		if not options.read_length:
+			options.read_length = ['50', '75', '100', '125', '150']
 		for readlen in options.read_length:
 			fh.write('  - {}\n'.format(readlen))
 
@@ -30,7 +32,7 @@ def parse_args():
 	parser.add_argument('-g','--reference-gtf', type=str, required=True, help='<required> GTF file for reference genome')
 	parser.add_argument('-o','--working-directory', type=str, required=True, help='<required> Working Directory: Location of output directory')
 	parser.add_argument('-p','--pim-home', type=str, required=True, help='<required> Location of PIM repository, IndexMaker defaults to location of {}'.format(__file__))
-	parser.add_argument('-rl','--read-length', action='append', help='<Required> Read Lengths of STAR Indices: i.e. 50, 75, 100, 125, 150', default=['50', '75', '100', '125', '150'], required=False)
+	parser.add_argument('-rl','--read-length', action='append', help='<optional> Read Lengths of STAR Indices: i.e. 50, 75, 100, 125, 150', default=[], required=False)
 	arguments = parser.parse_args()
 
 	return arguments
