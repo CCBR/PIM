@@ -14,7 +14,7 @@ rule all:
 		"annotate.genes.txt",
 		"refFlat.txt",
 		"geneinfo.bed",
-		expand("STAR/2.5.2b/genes-{readlength}/SA",readlength=READLENGTHS),
+		expand("STAR/2.7.0f/genes-{readlength}/SA",readlength=READLENGTHS),
 		expand("{genome}.rRNA_interval_list",genome=GENOME),
 		"karyoplot_gene_coordinates.txt",
 		"qualimap_info.txt",
@@ -88,28 +88,28 @@ rule star_init:
 		fa="ref.fa",
 		gtf="genes.gtf"
 	output:
-		"STAR/2.5.2b/ref.fa",
-		"STAR/2.5.2b/genes.gtf"
+		"STAR/2.7.0f/ref.fa",
+		"STAR/2.7.0f/genes.gtf"
 	shell:'''
-mkdir -p STAR/2.5.2b
-cd STAR/2.5.2b
+mkdir -p STAR/2.7.0f
+cd STAR/2.7.0f
 if [ ! -f ref.fa ]; then ln -s ../../ref.fa .;fi
 if [ ! -f genes.gtf ];then ln -s ../../genes.gtf .;fi
 '''
 
 rule star:
 	input:
-		fa="STAR/2.5.2b/ref.fa",
-		gtf="STAR/2.5.2b/genes.gtf"
+		fa="STAR/2.7.0f/ref.fa",
+		gtf="STAR/2.7.0f/genes.gtf"
 	threads: 32
 	output:
-		SA="STAR/2.5.2b/genes-{readlength}/SA"
+		SA="STAR/2.7.0f/genes-{readlength}/SA"
 	shell:'''
 rl={wildcards.readlength}
 rl=$((rl-1))
 #rl=$(python subtractone.py {wildcards.readlength})
-cd STAR/2.5.2b
-module load STAR/2.5.2b
+cd STAR/2.7.0f
+module load STAR/2.7.0f
 STAR \
 --runThreadN {threads} \
 --runMode genomeGenerate \
@@ -192,8 +192,8 @@ rule jsonmaker:
 		bigdict["references"]["rnaseq"]["GENOMEFILE"]=input.fa
 		bigdict["references"]["rnaseq"]["GENOME"]=input.fa
 		bigdict["references"]["rnaseq"]["GTFFILE"]=input.gtf
-		bigdict["references"]["rnaseq"]["STARDIR"]=params.workdir+"STAR/2.5.2b/genes-"
-		bigdict["references"]["rnaseq"]["STARREF"]=params.workdir+"STAR/2.5.2b/genes-"
+		bigdict["references"]["rnaseq"]["STARDIR"]=params.workdir+"STAR/2.7.0f/genes-"
+		bigdict["references"]["rnaseq"]["STARREF"]=params.workdir+"STAR/2.7.0f/genes-"
 		bigdict["references"]["rnaseq"]["ANNOTATE"]=params.workdir+"annotate.genes.txt"
 		bigdict["references"]["rnaseq"]["ANNOTATEISOFORMS"]=params.workdir+"annotate.isoforms.txt"
 		bigdict["references"]["rnaseq"]["REFFLAT"]=params.workdir+"refFlat.txt"

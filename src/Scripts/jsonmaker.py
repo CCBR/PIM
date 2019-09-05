@@ -11,8 +11,8 @@ for i in ["exomeseq", "genomeseq", "rnaseq", "rnaseqvargerm", "ChIPseq"]:
 bigdict["references"]["rnaseq"]["GENOMEFILE"]=input_fa
 bigdict["references"]["rnaseq"]["GENOME"]=input_fa
 bigdict["references"]["rnaseq"]["GTFFILE"]=input_gtf
-bigdict["references"]["rnaseq"]["STARDIR"]=params_workdir+"/STAR/2.5.2b/genes-"
-bigdict["references"]["rnaseq"]["STARREF"]=params_workdir+"/STAR/2.5.2b/genes-"
+bigdict["references"]["rnaseq"]["STARDIR"]=params_workdir+"/STAR/2.7.0f/genes-"
+bigdict["references"]["rnaseq"]["STARREF"]=params_workdir+"/STAR/2.7.0f/genes-"
 bigdict["references"]["rnaseq"]["ANNOTATE"]=params_workdir+"/annotate.genes.txt"
 bigdict["references"]["rnaseq"]["ANNOTATEISOFORMS"]=params_workdir+"/annotate.isoforms.txt"
 bigdict["references"]["rnaseq"]["REFFLAT"]=params_workdir+"/refFlat.txt"
