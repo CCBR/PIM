@@ -185,6 +185,9 @@ rule jsonmaker:
 		genome=GENOME
 	run:
 		import json
+		outdir=params.workdir
+		if not outdir.endswith("/"):
+			outdir+="/"
 		bigdict=dict()
 		bigdict["references"]=dict()
 		for i in ["exomeseq", "genomeseq", "rnaseq", "rnaseqvargerm", "ChIPseq"]:
@@ -192,18 +195,18 @@ rule jsonmaker:
 		bigdict["references"]["rnaseq"]["GENOMEFILE"]=input.fa
 		bigdict["references"]["rnaseq"]["GENOME"]=input.fa
 		bigdict["references"]["rnaseq"]["GTFFILE"]=input.gtf
-		bigdict["references"]["rnaseq"]["STARDIR"]=params.workdir+"STAR/2.7.0f/genes-"
-		bigdict["references"]["rnaseq"]["STARREF"]=params.workdir+"STAR/2.7.0f/genes-"
-		bigdict["references"]["rnaseq"]["ANNOTATE"]=params.workdir+"annotate.genes.txt"
-		bigdict["references"]["rnaseq"]["ANNOTATEISOFORMS"]=params.workdir+"annotate.isoforms.txt"
-		bigdict["references"]["rnaseq"]["REFFLAT"]=params.workdir+"refFlat.txt"
-		bigdict["references"]["rnaseq"]["BEDREF"]=params.workdir+"genes.ref.bed"
-		bigdict["references"]["rnaseq"]["GENEINFO"]=params.workdir+"geneinfo.bed"
-		bigdict["references"]["rnaseq"]["QUALIMAP_INFO"]=params.workdir+"qualimap_info.txt"
-		bigdict["references"]["rnaseq"]["KARYOBEDS"]=params.workdir+"karyobeds"
-		bigdict["references"]["rnaseq"]["KARYOPLOTER"]=params.workdir+"karyoplot_gene_coordinates.txt"
-		bigdict["references"]["rnaseq"]["RSEMREF"]=params.workdir+"rsemref/"+params.genome
-		bigdict["references"]["rnaseq"]["RRNALIST"]=params.workdir+params.genome+".rRNA_interval_list"
+		bigdict["references"]["rnaseq"]["STARDIR"]=outdir+"STAR/2.7.0f/genes-"
+		bigdict["references"]["rnaseq"]["STARREF"]=outdir+"STAR/2.7.0f/genes-"
+		bigdict["references"]["rnaseq"]["ANNOTATE"]=outdir+"annotate.genes.txt"
+		bigdict["references"]["rnaseq"]["ANNOTATEISOFORMS"]=outdir+"annotate.isoforms.txt"
+		bigdict["references"]["rnaseq"]["REFFLAT"]=outdir+"refFlat.txt"
+		bigdict["references"]["rnaseq"]["BEDREF"]=outdir+"genes.ref.bed"
+		bigdict["references"]["rnaseq"]["GENEINFO"]=outdir+"geneinfo.bed"
+		bigdict["references"]["rnaseq"]["QUALIMAP_INFO"]=outdir+"qualimap_info.txt"
+		bigdict["references"]["rnaseq"]["KARYOBEDS"]=outdir+"karyobeds"
+		bigdict["references"]["rnaseq"]["KARYOPLOTER"]=outdir+"karyoplot_gene_coordinates.txt"
+		bigdict["references"]["rnaseq"]["RSEMREF"]=outdir+"rsemref/"+params.genome
+		bigdict["references"]["rnaseq"]["RRNALIST"]=outdir+params.genome+".rRNA_interval_list"
 		bigdict["references"]["rnaseq"]["FASTQ_SCREEN_CONFIG"]="/data/CCBR_Pipeliner/db/PipeDB/lib/fastq_screen.conf"
 		bigdict["references"]["rnaseq"]["FASTAWITHADAPTERSETC"]="/data/CCBR_Pipeliner/db/PipeDB/dev/TruSeq_and_nextera_adapters_new.fa"
 		bigdict["references"]["rnaseq"]["adapter.file"]="/data/CCBR_Pipeliner/db/PipeDB/dev/TruSeq_and_nextera_adapters.ngsqc.dat"
