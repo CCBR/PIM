@@ -203,7 +203,7 @@ rule jsonmaker:
 		bigdict["references"]["rnaseq"]["BEDREF"]=outdir+"genes.ref.bed"
 		bigdict["references"]["rnaseq"]["GENEINFO"]=outdir+"geneinfo.bed"
 		bigdict["references"]["rnaseq"]["QUALIMAP_INFO"]=outdir+"qualimap_info.txt"
-		bigdict["references"]["rnaseq"]["KARYOBEDS"]=outdir+"karyobeds"
+		bigdict["references"]["rnaseq"]["KARYOBEDS"]=outdir+"karyobeds/"
 		bigdict["references"]["rnaseq"]["KARYOPLOTER"]=outdir+"karyoplot_gene_coordinates.txt"
 		bigdict["references"]["rnaseq"]["RSEMREF"]=outdir+"rsemref/"+params.genome
 		bigdict["references"]["rnaseq"]["RRNALIST"]=outdir+params.genome+".rRNA_interval_list"
@@ -212,7 +212,7 @@ rule jsonmaker:
 		bigdict["references"]["rnaseq"]["adapter.file"]="/data/CCBR_Pipeliner/db/PipeDB/dev/TruSeq_and_nextera_adapters.ngsqc.dat"
 		bigdict["references"]["rnaseq"]["trimmomatic.adapters"]="/data/CCBR_Pipeliner/db/PipeDB/dev/adapters2.fa"
 		bigdict["references"]["rnaseq"]["fastqc.adapters"]="/data/CCBR_Pipeliner/db/PipeDB/dev/fastqc.adapters"
-		bigdict["references"]["rnaseq"]["ORGANISM"]="HUMAN"
+		bigdict["references"]["rnaseq"]["ORGANISM"]="CUSTOM"
 		with open(output.json, 'w') as fp:
 			json.dump(bigdict, fp, indent=4)
 
