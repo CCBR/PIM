@@ -5,3 +5,4 @@ stats.txt
 snakemake.log
 config.yaml
 slurm-*.out
+PIM.sublime-*

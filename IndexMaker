@@ -73,7 +73,8 @@ usage() {
 
 
 # Get User's buy-in nodes from sacct query
-BUY_IN_NODE=$(ACCOUNT_SPONSOR=$(sacctmgr -rn list user | awk '{print $2}') && scontrol show partitions | grep -i $ACCOUNT_SPONSOR -B1 | grep '^PartitionName' | cut -d '=' -f2 | grep -iv 'gpu'| tr '\n' ',' | sed 's/.$//')
+ACCOUNT_SPONSOR=$(sacctmgr -rn list user | awk '{print $2}')
+BUY_IN_NODE=$(scontrol show partitions | grep -i $ACCOUNT_SPONSOR -B1 | grep '^PartitionName' | cut -d '=' -f2 | grep -iv 'gpu'| tr '\n' ',' | sed 's/.$//') || BUY_IN_NODE='norm'
 
 # Getting PATH of PIM repository
 PIM_HOME=$(get_home)
