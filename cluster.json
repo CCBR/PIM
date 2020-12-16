@@ -1,6 +1,6 @@
 {
     "__default__": {
-        "mem": "4g",
+        "mem": "8g",
         "partition": "quick",
         "threads": "1",
         "time": "1:00:00"
